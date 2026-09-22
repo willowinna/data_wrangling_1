@@ -8,6 +8,7 @@ this file is for doing data import.
 
 ```{r message=FALSE}
 library(tidyverse)
+library(readxl)
 ```
 
 Import the first dataset.
@@ -59,5 +60,36 @@ Skimming?
 skimr::skim(pups_df)
 ```
 
+
+## Oh excel ...
+
+```{r}
+mlb_df = read_excel("data/mlb11.xlsx")
+```
+
+Look at the data
+
+```{r}
+mlb_df
+```
+
+load lotr data
+impory fotr words
+
+```{r}
+fotr_df = 
+  read_excel("data/LotR_Words.xlsx",
+             range = "B3:D6"
+             )
+fotr_df
+```
+
+```{r}
+ttt_df = 
+  read_excel("data/LotR_Words.xlsx",
+             range = "F3:H6"
+             )
+ttt_df
+```
 
 
