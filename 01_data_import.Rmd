@@ -9,6 +9,7 @@ this file is for doing data import.
 ```{r message=FALSE}
 library(tidyverse)
 library(readxl)
+library(haven)
 ```
 
 Import the first dataset.
@@ -92,4 +93,24 @@ ttt_df =
 ttt_df
 ```
 
+## import SAS
 
+Read in the PULSE dataset.
+
+```{r}
+pulse_df = 
+  read_sas("data/public_pulse_data.sas7bdat")
+
+pulse_df = janitor::clean_names(pulse_df)
+pulse_df
+```
+
+##what's so bad about "read.csv()"
+
+```{r}
+pups_df_base = 
+  read.csv("data/FAS_pups.csv")
+pups_df_base
+```
+
+wont show: lazy about variable names: super low for big dataset
