@@ -15,7 +15,11 @@ janitor作用: 一键统一和清理数据框（data frame）的列名
 
 ```{r warning=TRUE}
 litter_df = 
-  read_csv(file  = "data/FAS_litters.csv", skip = 0)
+  read_csv(
+    file  = "data/FAS_litters.csv", 
+    skip = 0,
+    na = c("","NA",".")
+    )
 
 litter_df = janitor::clean_names(litter_df)
 ```
@@ -25,7 +29,10 @@ skip = n, 可跳过前n列
 
 ```{r}
 pups_df = 
-  read_csv(file  = "data/FAS_pups.csv", skip = 3)
+  read_csv(
+    file  = "data/FAS_pups.csv", skip = 3,
+    na = c("","NA",".")
+    )
 pups_df = janitor::clean_names(pups_df)
 ```
 
