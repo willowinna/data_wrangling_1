@@ -2,10 +2,55 @@
 title: "01_data_import"
 output: github_document
 ---
+output: github_document knit后，可生成md文件
 
 this file is for doing data import.
 
-```{r}
+```{r message=FALSE}
 library(tidyverse)
 ```
+
+Import the first dataset.
+janitor作用: 一键统一和清理数据框（data frame）的列名
+
+```{r warning=TRUE}
+litter_df = 
+  read_csv(file  = "data/FAS_litters.csv", skip = 0)
+
+litter_df = janitor::clean_names(litter_df)
+```
+
+Import the second dataset.
+skip = n, 可跳过前n列
+
+```{r}
+pups_df = 
+  read_csv(file  = "data/FAS_pups.csv", skip = 3)
+pups_df = janitor::clean_names(pups_df)
+```
+
+##look at the data
+
+```{r}
+litter_df
+pups_df
+```
+
+Head or Tail
+查看前n行或者最后n行
+
+```{r}
+head(litter_df, 20)
+tail(pups_df, 5)
+```
+
+
+Skimming?
+对数据框进行快速、全面的数据概览
+
+```{r}
+skimr::skim(pups_df)
+```
+
+
 
