@@ -761,6 +761,104 @@ is 2</p>
 ## 10 Low7  #98                   23.8        43.8          20               9
 ## # ℹ 39 more rows
 ## # ℹ 2 more variables: pups_dead_birth &lt;dbl&gt;, pups_survive &lt;dbl&gt;</code></pre>
+<p>##Do multiple steps</p>
+<p>不要创建一堆乱七八糟奇怪名字的子表, 不要随意换行注意先后顺序</p>
+<pre class="r"><code>litters_df = 
+  read_csv(file  = &quot;data/FAS_litters.csv&quot;,na = c(&quot;&quot;,&quot;NA&quot;,&quot;.&quot;)) |&gt;
+  janitor::clean_names() |&gt;
+  select(group, starts_with(&quot;gd&quot;)) |&gt;
+  drop_na() |&gt;
+  mutate(
+    wt_gain = gd18_weight - gd0_weight,
+    group = str_to_lower(group)
+  )</code></pre>
+<pre><code>## Rows: 49 Columns: 8
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (2): Group, Litter Number
+## dbl (6): GD0 weight, GD18 weight, GD of Birth, Pups born alive, Pups dead @ ...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>in pups</p>
+<pre class="r"><code>pups_df = read_csv(file  = &quot;data/FAS_pups.csv&quot;, skip = 3,na = c(&quot;&quot;,&quot;NA&quot;,&quot;.&quot;)) |&gt;
+  janitor::clean_names() |&gt;
+  drop_na() |&gt;
+  select(litter_number, starts_with(&quot;pd&quot;)) |&gt;
+  mutate(
+    pd_walk_minus_7 = pd_walk - 7
+  )</code></pre>
+<pre><code>## Rows: 313 Columns: 6
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): Litter Number
+## dbl (5): Sex, PD ears, PD eyes, PD pivot, PD walk
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>pups_df </code></pre>
+<pre><code>## # A tibble: 272 × 6
+##    litter_number pd_ears pd_eyes pd_pivot pd_walk pd_walk_minus_7
+##    &lt;chr&gt;           &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;           &lt;dbl&gt;
+##  1 #85                 4      13        7      11               4
+##  2 #85                 4      13        7      12               5
+##  3 #1/2/95/2           5      13        7       9               2
+##  4 #1/2/95/2           5      13        8      10               3
+##  5 #5/5/3/83/3-3       5      13        8      10               3
+##  6 #5/5/3/83/3-3       5      14        6       9               2
+##  7 #4/2/95/3-3         4      13        6       8               1
+##  8 #4/2/95/3-3         4      13        7       9               2
+##  9 #85                 4      13        6      11               4
+## 10 #1/2/95/2           4      13        7       9               2
+## # ℹ 262 more rows</code></pre>
+<p>sometimes the first thing is not a dataframe</p>
+<pre class="r"><code>litters_df |&gt;
+  filter(group %in% c(&quot;Con7&quot;, &quot;Con8&quot;)) |&gt;
+  view()</code></pre>
+<pre class="r"><code>litters_df |&gt;
+  lm(gd18_weight ~ gd0_weight, data = _ )</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = gd18_weight ~ gd0_weight, data = litters_df)
+## 
+## Coefficients:
+## (Intercept)   gd0_weight  
+##      15.342        1.084</code></pre>
+<p>select &amp; pull</p>
+<pre class="r"><code>litters_df |&gt;
+  select(group)</code></pre>
+<pre><code>## # A tibble: 31 × 1
+##    group
+##    &lt;chr&gt;
+##  1 con7 
+##  2 con7 
+##  3 con7 
+##  4 con7 
+##  5 mod7 
+##  6 mod7 
+##  7 mod7 
+##  8 mod7 
+##  9 mod7 
+## 10 mod7 
+## # ℹ 21 more rows</code></pre>
+<pre class="r"><code>litters_df |&gt;
+  pull(group)</code></pre>
+<pre><code>##  [1] &quot;con7&quot; &quot;con7&quot; &quot;con7&quot; &quot;con7&quot; &quot;mod7&quot; &quot;mod7&quot; &quot;mod7&quot; &quot;mod7&quot; &quot;mod7&quot; &quot;mod7&quot;
+## [11] &quot;mod7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;mod8&quot;
+## [21] &quot;mod8&quot; &quot;mod8&quot; &quot;mod8&quot; &quot;mod8&quot; &quot;low8&quot; &quot;low8&quot; &quot;low8&quot; &quot;low8&quot; &quot;low8&quot; &quot;low8&quot;
+## [31] &quot;low8&quot;</code></pre>
+<p>never do “$” sign</p>
+<pre class="r"><code>litters_df$group</code></pre>
+<pre><code>##  [1] &quot;con7&quot; &quot;con7&quot; &quot;con7&quot; &quot;con7&quot; &quot;mod7&quot; &quot;mod7&quot; &quot;mod7&quot; &quot;mod7&quot; &quot;mod7&quot; &quot;mod7&quot;
+## [11] &quot;mod7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;low7&quot; &quot;mod8&quot;
+## [21] &quot;mod8&quot; &quot;mod8&quot; &quot;mod8&quot; &quot;mod8&quot; &quot;low8&quot; &quot;low8&quot; &quot;low8&quot; &quot;low8&quot; &quot;low8&quot; &quot;low8&quot;
+## [31] &quot;low8&quot;</code></pre>
+<p>pipes and viewing</p>
+<pre class="r"><code>litters_df |&gt;
+  filter(group %in% c(&quot;Con7&quot;, &quot;Con8&quot;))</code></pre>
+<pre><code>## # A tibble: 0 × 5
+## # ℹ 5 variables: group &lt;chr&gt;, gd0_weight &lt;dbl&gt;, gd18_weight &lt;dbl&gt;,
+## #   gd_of_birth &lt;dbl&gt;, wt_gain &lt;dbl&gt;</code></pre>
 
 
 

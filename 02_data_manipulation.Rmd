@@ -104,3 +104,66 @@ arrange(litters_df, desc(pups_born_alive))
 
 ```
 
+##Do multiple steps
+
+不要创建一堆乱七八糟奇怪名字的子表,
+不要随意换行注意先后顺序
+```{r}
+litters_df = 
+  read_csv(file  = "data/FAS_litters.csv",na = c("","NA",".")) |>
+  janitor::clean_names() |>
+  select(group, starts_with("gd")) |>
+  drop_na() |>
+  mutate(
+    wt_gain = gd18_weight - gd0_weight,
+    group = str_to_lower(group)
+  )
+```
+
+in pups
+
+```{r}
+pups_df = read_csv(file  = "data/FAS_pups.csv", skip = 3,na = c("","NA",".")) |>
+  janitor::clean_names() |>
+  drop_na() |>
+  select(litter_number, starts_with("pd")) |>
+  mutate(
+    pd_walk_minus_7 = pd_walk - 7
+  )
+pups_df 
+```
+
+sometimes the first thing is not a dataframe
+
+```{r}
+litters_df |>
+  filter(group %in% c("Con7", "Con8")) |>
+  view()
+```
+
+```{r}
+litters_df |>
+  lm(gd18_weight ~ gd0_weight, data = _ )
+```
+
+select & pull
+```{r}
+litters_df |>
+  select(group)
+
+litters_df |>
+  pull(group)
+```
+
+never do "$" sign
+
+```{r}
+litters_df$group
+```
+
+pipes and viewing
+```{r}
+litters_df |>
+  filter(group %in% c("Con7", "Con8"))
+```
+
